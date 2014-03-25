@@ -1,0 +1,64 @@
+<div class="well well-lrg"><h2> Docket - Calendars </h2>
+<a href="/#calendars/new" class="btn btn-primary"> Add New Calendar </a>
+<a href="/#events/new" class="btn btn-primary"> Add New Event </a><br><br>
+
+<% if (calendars.length > 0) { %>
+
+  <% calendars.each(function (calendar) { %>
+  <div class="btn-group">
+
+    <button type="button" class="btn btn-inverse">
+    <span class="glyphicon glyphicon-calendar"></span>
+     <%= calendar.escape("title") %></button>
+
+    <button type="button" class="btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+      <span class="caret"></span>
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <li><a href="#">Toggle</a></li>
+      <li><a href="#calendars/<%= calendar.escape("id") %>/edit">Edit</a></li>
+      <li><a href="#">Share</a></li>
+      <li class="divider"></li>
+      <li><a data-id="<%= calendar.escape("id")%>" class="delete-calendar" href="#">Delete</a></li>
+    </ul>
+  </div>
+  <% }) %>
+
+</div>
+
+
+
+
+
+  <br>
+	<% var entries = [] %>
+	<% calendars.each(function(calendar) { %>
+	  <%  calendar.entries().each(function (entry) { %>
+				<% entries.push(entry) %>
+			<% }) %>
+	<% }) %>
+
+	<% entries = _.sortBy(entries, function(entry) { return entry.escape("date") }) %>
+
+
+	<% var dates = [] %>
+  <% _(entries).each(function(entry) { %>
+
+	  <% if(_.indexOf(dates, entry.escape("date"), true) == -1) { %>
+			<h3><%= entry.escape("date") %> </h3><br>
+		<% } %>
+    <div class="well well-sm">
+    <%= entry.escape("title") %> <br>
+    <%= entry.escape("notes") %> <br>
+		<%= calendars.get(entry.escape("calendar_id")).escape("title") %> <br>
+		 <% dates.push(entry.escape("date")) %>
+    <a data-id="<%= entry.escape("id")%>" data-calendar-id ="<%= entry.escape("calendar_id") %>" class="delete-event" href="#">Delete</a></li>
+    </div>
+ <% }) %>
+
+
+
+<% } else { %>
+  You have no calendars <br>
+<% } %>
